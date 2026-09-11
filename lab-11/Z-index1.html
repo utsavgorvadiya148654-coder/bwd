@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>z-index</title>
+
+<body>
+    <style>
+        body{
+            font-family: arial,sans-serif;
+            text-align: center;
+        }
+
+        h1{
+            color : darkblue;
+        }
+        .container{
+            position: relative;
+            width: 500px;
+            height: 350px;
+            margin: 30px auto;
+            border: 2px solid black;
+        }
+
+        .box1{
+            position: absolute;
+            width: 200px;
+            height: 150px;
+            background-color: blue;
+            top: 50px;
+            left: 50px;
+            z-index: 1;
+        }
+
+        .box2{
+            position: absolute;
+            width: 200px;
+            height: 150px;
+            background-color: aquamarine;
+            top: 50px;
+            left: 50px;
+            z-index: 2;
+        }
+
+
+        .box3{
+            position: absolute;
+            width: 200px;
+            height: 150px;
+            background-color: darkcyan;
+            top: 50px;
+            left: 50px;
+            z-index: 3;
+        }
+
+
+        .box4{
+            position: absolute;
+            width: 200px;
+            height: 150px;
+            background-color: blanchedalmond;
+            top: 50px;
+            left: 50px;
+            z-index: 4;
+        }
+
+
+        .box{
+            color: beige;
+            font-size: 30px;
+            padding: 30px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+</body>
+<body>
+    <h1>css z-index property</h1>
+    <p>the box with the height <b>z-index</b> appears on top
+    </p>
+
+    <div class="container">
+        blue box <Br>
+        z-index:1
+    </div>
+
+    <div class="container">
+        aquamarine box <Br>
+        z-index:2
+    </div>
+
+    <div class="container">
+        arkcyan box <Br>
+        z-index:3
+    </div>
+
+    <div class="container">
+        blanchedalmond box <Br>
+        z-index:4
+    </div>
+</body>
+</html>
