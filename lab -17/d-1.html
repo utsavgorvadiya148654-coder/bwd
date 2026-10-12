@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Registration System</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            width: 350px;
+            max-width: 95%;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px #33333355;
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 12px;
+            border: none;
+            border-radius: 6px;
+            background: #667eea;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #4b5fc5;
+        }
+
+        .link {
+            color: #667eea;
+            cursor: pointer;
+            margin-top: 15px;
+            display: inline-block;
+            font-size: 14px;
+        }
+
+        .link:hover {
+            text-decoration: underline;
+        }
+
+        .message {
+            font-size: 14px;
+            margin-top: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #homePage p {
+            color: #555;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- LOGIN PAGE -->
+    <div id="loginPage">
+        <h2>Login Page</h2>
+
+        <form onsubmit="login(event)">
+            <input type="email" id="loginEmail"
+                   placeholder="Enter Email" required>
+
+            <input type="password" id="loginPassword"
+                   placeholder="Enter Password" required>
+
+            <button type="submit">Login</button>
+        </form>
+
+        <span class="link" onclick="showPage('registerPage')">
+            Create New Account
+        </span>
+        <br>
+        <span class="link" onclick="showPage('forgotPage')">
+            Forgot Password?
+        </span>
+
+        <p class="message" id="loginMessage"></p>
+    </div>
+
+
+    <!-- REGISTRATION PAGE -->
+    <div id="registerPage" class="hidden">
+        <h2>Registration Page</h2>
+
+        <form onsubmit="register(event)">
+            <input type="text" id="regName"
+                   placeholder="Full Name" required>
+
+            <input type="email" id="regEmail"
+                   placeholder="Email Address" required>
+
+            <input type="password" id="regPassword"
+                   placeholder="Create Password"
+                   minlength="6" required>
+
+            <button type="submit">Register</button>
+        </form>
+
+        <span class="link" onclick="showPage('loginPage')">
+            Already have an account? Login
+        </span>
+
+        <p class="message" id="registerMessage"></p>
+    </div>
+
+
+    <!-- FORGOT PASSWORD PAGE -->
+    <div id="forgotPage" class="hidden">
+        <h2>Forgot Password</h2>
+
+        <form onsubmit="resetPassword(event)">
+            <input type="email" id="forgotEmail"
+                   placeholder="Registered Email" required>
+
+            <input type="password" id="newPassword"
+                   placeholder="Enter New Password"
+                   minlength="6" required>
+
+            <button type="submit">Reset Password</button>
+        </form>
+
+        <span class="link" onclick="showPage('loginPage')">
+            Back to Login
+        </span>
+
+        <p class="message" id="forgotMessage"></p>
+    </div>
+
+
+    <!-- HOME PAGE AFTER LOGIN -->
+    <div id="homePage" class="hidden">
+        <h2>Welcome!</h2>
+        <p id="welcomeMessage"></p>
+
+        <button onclick="logout()">Logout</button>
+    </div>
+
+</div>
+
+
+<script>
+    // Show selected page
+    function showPage(pageId) {
+        document.querySelectorAll(".container > div")
+            .forEach(page => page.classList.add("hidden"));
+
+        document.getElementById(pageId)
+            .classList.remove("hidden");
+
+        document.querySelectorAll(".message")
+            .forEach(msg => msg.textContent = "");
+    }
+
+    // Get saved users
+    function getUsers() {
+        return JSON.parse(
+            localStorage.getItem("users") || "[]"
+        );
+    }
+
+    // Registration
+    function register(event) {
+        event.preventDefault();
+
+        const name = document.getElementById("regName").value.trim();
+        const email = document.getElementById("regEmail")
+            .value.trim().toLowerCase();
+        const password = document.getElementById("regPassword").value;
+
+        let users = getUsers();
+
+        if (users.some(user => user.email === email)) {
+            document.getElementById("registerMessage").textContent =
+                "Email is already registered!";
+            return;
+        }
+
+        users.push({ name, email, password });
+
+        localStorage.setItem("users", JSON.stringify(users));
+
+        alert("Registration successful! Please login.");
+
+        document.getElementById("loginEmail").value = email;
+        document.getElementById("loginPassword").value = "";
+        document.getElementById("registerMessage").textContent = "";
+
+        showPage("loginPage");
+    }
+
+    // Login
+    function login(event) {
+        event.preventDefault();
+
+        const email = document.getElementById("loginEmail")
+            .value.trim().toLowerCase();
+        const password = document.getElementById("loginPassword").value;
+
+        const users = getUsers();
+
+        const user = users.find(
+            user => user.email === email &&
+                    user.password === password
+        );
+
+        if (user) {
+            sessionStorage.setItem("loggedInUser", user.email);
+
+            document.getElementById("welcomeMessage").textContent =
+                "Hello, " + user.name + "! You are logged in.";
+
+            showPage("homePage");
+        } else {
+            document.getElementById("loginMessage").textContent =
+                "Invalid email or password!";
+        }
+    }
+
+    // Forgot password / Reset password
+    function resetPassword(event) {
+        event.preventDefault();
+
+        const email = document.getElementById("forgotEmail")
+            .value.trim().toLowerCase();
+        const newPassword = document.getElementById("newPassword").value;
+
+        let users = getUsers();
+
+        const index = users.findIndex(user => user.email === email);
+
+        if (index === -1) {
+            document.getElementById("forgotMessage").textContent =
+                "Email is not registered!";
+            return;
+        }
+
+        users[index].password = newPassword;
+
+        localStorage.setItem("users", JSON.stringify(users));
+
+        alert("Password reset successfully! Please login.");
+
+        document.getElementById("loginEmail").value = email;
+        document.getElementById("loginPassword").value = "";
+
+        showPage("loginPage");
+    }
+
+    // Logout
+    function logout() {
+        sessionStorage.removeItem("loggedInUser");
+
+        document.getElementById("loginPassword").value = "";
+
+        alert("You have logged out successfully!");
+
+        showPage("loginPage");
+    }
+</script>
+
+</body>
+</html>
